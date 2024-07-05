@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadAvailabilities() {
         const month = currentDate.getMonth() + 1;
         const year = currentDate.getFullYear();
-
+        const currentDate = new Date().getDate();
         fetch(`get_availabilities.php?month=${month}&year=${year}`)
             .then(response => response.json())
             .then(data => {
@@ -81,10 +81,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 data.forEach(availability => {
                     const day = new Date(availability.date).getDate();
-                    if (!availabilityMap[day]) {
-                        availabilityMap[day] = [];
+                    if (day < currentDate) {
+                        deleteAvailability(availability.id);
+                    } else {
+                        if (!availabilityMap[day]) {
+                            availabilityMap[day] = [];
+                        }
+                        availabilityMap[day].push(availability);
                     }
-                    availabilityMap[day].push(availability);
                 });
 
                 for (const day in availabilityMap) {
