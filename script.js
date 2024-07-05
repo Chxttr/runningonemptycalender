@@ -80,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const availabilityMap = {};
 
                 data.forEach(availability => {
+                    console.log(JSON.stringify(availability));
                     const day = new Date(availability.date).getDate();
                     if (day < currentDate) {
                         deleteAvailability(availability.id);
