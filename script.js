@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function loadAvailabilities() {
-        const month = currentDate.getMonth() + 1;  // JavaScript months are 0-11
+        const month = currentDate.getMonth() + 1;
         const year = currentDate.getFullYear();
 
         fetch(`get_availabilities.php?month=${month}&year=${year}`)
@@ -96,7 +96,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             infoElement.textContent = `${availability.name}: ${availability.start_time}:00 - ${availability.end_time}:00 (${availability.status})`;
                             infoElement.classList.add('info');
 
-                            // Apply status-specific class
                             if (availability.status === 'Vrij') {
                                 infoElement.classList.add('vrij');
                             } else if (availability.status === 'Niet vrij') {
@@ -109,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             deleteButton.textContent = 'Delete';
                             deleteButton.addEventListener('click', (event) => {
                                 event.stopPropagation();
-                                console.log(`Deleting availability ID: ${availability.id}`); // Debug log
+                                console.log(`Deleting availability ID: ${availability.id}`);
                                 deleteAvailability(availability.id);
                             });
 
@@ -119,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             })
-            .catch(error => console.error('Error loading availabilities:', error)); // Debug log
+            .catch(error => console.error('Error loading availabilities:', error));
     }
 
     function deleteAvailability(id) {
@@ -132,14 +131,14 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(response => response.text())
         .then(data => {
-            console.log('Delete response:', data); // Debug log
+            console.log('Delete response:', data);
             if (data.includes('Record deleted successfully')) {
                 renderCalendar();
             } else {
                 console.error('Error deleting availability:', data);
             }
         })
-        .catch(error => console.error('Error:', error)); // Debug log
+        .catch(error => console.error('Error:', error));
     }
 
     function showForm() {
@@ -171,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
             closeForm();
             availabilityForm.reset();
         })
-        .catch(error => console.error('Error saving availability:', error)); // Debug log
+        .catch(error => console.error('Error saving availability:', error));
     });
 
     prevMonthButton.addEventListener('click', () => {
@@ -203,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 loginUser(username, password);
             }
         })
-        .catch(error => console.error('Error registering:', error)); // Debug log
+        .catch(error => console.error('Error registering:', error));
     });
 
     loginForm.addEventListener('submit', (event) => {
@@ -231,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderCalendar();
             }
         })
-        .catch(error => console.error('Error logging in:', error)); // Debug log
+        .catch(error => console.error('Error logging in:', error));
     }
 
     logoutButton.addEventListener('click', () => {
@@ -242,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loginForm.classList.remove('hidden');
             registerForm.classList.add('hidden');
         })
-        .catch(error => console.error('Error logging out:', error)); // Debug log
+        .catch(error => console.error('Error logging out:', error));
     });
 
     showRegisterFormButton.addEventListener('click', () => {
@@ -270,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 registerForm.classList.add('hidden');
             }
         })
-        .catch(error => console.error('Error checking session:', error)); // Debug log
+        .catch(error => console.error('Error checking session:', error));
 
     renderCalendar();
 });
