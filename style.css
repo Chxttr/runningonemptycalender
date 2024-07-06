@@ -10,7 +10,14 @@ body {
     color: #333;
     overflow-x: hidden; /* Prevent horizontal scrolling */
 }
+#login_logo{
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    display: block;
+    margin-bottom: 20px;
 
+}
 #auth-container {
     width: 300px;
     margin-top: 50px;
@@ -57,10 +64,15 @@ body {
     background-color: #0056b3;
 }
 
-.hidden,
-#calendar-container.hidden,
-#event-form.hidden,
-#availability-detail.hidden {
+.hidden {
+    display: none;
+}
+
+#calendar-container.hidden {
+    display: none;
+}
+
+#event-form.hidden {
     display: none;
 }
 
@@ -156,8 +168,7 @@ body {
     cursor: not-allowed;
 }
 
-#event-form,
-#availability-detail {
+#event-form {
     position: fixed;
     top: 20%;
     left: 50%;
@@ -171,17 +182,38 @@ body {
     max-width: 400px; /* Max width for form */
 }
 
-#availability-form label,
-#availability-form select,
-#availability-form input,
-#availability-form button {
+#event-form.hidden {
+    display: none;
+}
+
+#availability-form label {
     display: block;
+    margin: 10px 0 5px;
+}
+
+#availability-form input,
+#availability-form select {
     width: 100%;
-    margin-bottom: 10px;
     padding: 10px;
     box-sizing: border-box;
+    margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
+}
+
+#availability-form button {
+    margin-right: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#availability-form button:hover {
+    background-color: #0056b3;
 }
 
 .info {

@@ -15,14 +15,14 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+$name = $_SESSION['username'];
 $date = $_POST['date'];
 $start_time = $_POST['start_time'];
 $end_time = $_POST['end_time'];
 $status = $_POST['status'];
-$activity_id = isset($_POST['activity']) ? $_POST['activity'] : NULL;
 $user_id = $_SESSION['user_id'];
 
-$sql = "INSERT INTO availabilities (date, start_time, end_time, status, user_id, activity_id) VALUES ('$date', '$start_time', '$end_time', '$status', '$user_id', '$activity_id')";
+$sql = "INSERT INTO availabilities (name, date, start_time, end_time, status, user_id) VALUES ('$name', '$date', '$start_time', '$end_time', '$status', '$user_id')";
 
 if ($conn->query($sql) === TRUE) {
     echo "New record created successfully";

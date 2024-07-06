@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Availability Calendar</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="./logo.png" type="image/x-icon">
 </head>
 <body>
     <div id="auth-container">
         <form id="login-form">
+            <img id="login_logo" src="./logo.png" alt="runningonempty">
             <h2>Login</h2>
             <label for="login-username">Username:</label>
             <input type="text" id="login-username" required>
@@ -18,6 +20,7 @@
             <button type="button" id="show-register-form">Register</button>
         </form>
         <form id="register-form" class="hidden">
+            <img id="login_logo" src="./logo.png" alt="runningonempty">
             <h2>Register</h2>
             <label for="reg-username">Username:</label>
             <input type="text" id="reg-username" required>
@@ -27,12 +30,11 @@
             <button type="button" id="show-login-form">Login</button>
         </form>
     </div>
-
     <div id="calendar-container" class="hidden">
         <div id="calendar-header">
-            <button id="prev-month">&lt;</button>
+            <button id="prev-month">Previous</button>
             <h2 id="month-year"></h2>
-            <button id="next-month">&gt;</button>
+            <button id="next-month">Next</button>
         </div>
         <div id="day-names">
             <div>Sun</div>
@@ -46,14 +48,6 @@
         <div id="calendar"></div>
         <button id="logout-button">Logout</button>
     </div>
-
-    <div id="availability-detail" class="hidden">
-        <h2>Availability Details</h2>
-        <div id="availability-info"></div>
-        <button id="add-availability">Add Availability</button>
-        <button onclick="closeDetail()">Close</button>
-    </div>
-
     <div id="event-form" class="hidden">
         <h2>Add Availability</h2>
         <form id="availability-form">
@@ -67,15 +61,10 @@
                 <option value="Niet vrij">Niet vrij</option>
                 <option value="Nog niet zeker">Nog niet zeker</option>
             </select>
-            <div id="activity-container" class="hidden">
-                <label for="activity">Activity:</label>
-                <select id="activity"></select>
-            </div>
             <button type="submit">Save</button>
             <button type="button" onclick="closeForm()">Cancel</button>
         </form>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
