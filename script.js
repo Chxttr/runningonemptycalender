@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM loaded')
     const calendar = document.getElementById('calendar');
     const form = document.getElementById('event-form');
     const availabilityForm = document.getElementById('availability-form');
@@ -79,9 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.json())
             .then(data => {
                 const availabilityMap = {};
-                console.log('hiii')
                 data.forEach(availability => {
-                    console.log(JSON.stringify(availability));
                     const day = new Date(availability.date).getDate();
                     if (day < currentDay) {
                         deleteAvailability(availability.id, true);
@@ -110,15 +107,19 @@ document.addEventListener('DOMContentLoaded', () => {
                                 infoElement.classList.add('niet-zeker');
                             }
 
-                            const deleteButton = document.createElement('button');
-                            deleteButton.textContent = 'Delete';
-                            deleteButton.addEventListener('click', (event) => {
-                                event.stopPropagation();
-                                console.log(`Deleting availability ID: ${availability.id}`);
-                                deleteAvailability(availability.id);
-                            });
+                            //Check if the availability.user_id is the same as the user_id of the session
+                            //If so, add a delete button to the availability
+                            if (availability.user_id === data[0].user_id) {
+                                const deleteButton = document.createElement('button');
+                                deleteButton.textContent = 'Delete';
+                                deleteButton.addEventListener('click', (event) => {
+                                    event.stopPropagation();
+                                    console.log(`Deleting availability ID: ${availability.id}`);
+                                    deleteAvailability(availability.id);
+                                });
 
-                            infoElement.appendChild(deleteButton);
+                                infoElement.appendChild(deleteButton);
+                            }
                             dayElement.appendChild(infoElement);
                         });
                     }

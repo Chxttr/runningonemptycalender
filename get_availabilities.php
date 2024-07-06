@@ -13,7 +13,7 @@ if ($conn->connect_error) {
 $month = $_GET['month'];
 $year = $_GET['year'];
 
-$sql = "SELECT id, name, date, start_time, end_time, status FROM availabilities WHERE MONTH(date) = '$month' AND YEAR(date) = '$year'";
+$sql = "SELECT id, name, date, start_time, end_time, status, user_id FROM availabilities WHERE MONTH(date) = '$month' AND YEAR(date) = '$year'";
 $result = $conn->query($sql);
 
 $availabilities = array();
