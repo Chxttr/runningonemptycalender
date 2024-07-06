@@ -19,11 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const authContainer = document.getElementById('auth-container');
     const availabilityDetail = document.getElementById('availability-detail');
     const availabilityInfo = document.getElementById('availability-info');
-    const createAvailabilityButton = document.getElementById('create-availability');
-    
+    const addAvailabilityButton = document.getElementById('add-availability');
+
     let currentDate = new Date();
     let currentSelectedDate = null;
-    let selectedAvailabilityId = null;
 
     function populateTimeSelect(select) {
         for (let hour = 0; hour < 24; hour++) {
@@ -52,13 +51,21 @@ document.addEventListener('DOMContentLoaded', () => {
     populateTimeSelect(endTimeSelect);
     populateActivitySelect();
 
+    statusSelect.addEventListener('change', () => {
+        if (statusSelect.value === 'Vrij') {
+            activityContainer.classList.remove('hidden');
+        } else {
+            activityContainer.classList.add('hidden');
+        }
+    });
+
     function renderCalendar() {
         calendar.innerHTML = '';
         const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
         const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
         const daysInMonth = lastDayOfMonth.getDate();
         const startDay = firstDayOfMonth.getDay();
-        
+
         monthYearDisplay.textContent = `${currentDate.toLocaleString('default', { month: 'long' })} ${currentDate.getFullYear()}`;
 
         for (let i = 0; i < startDay; i++) {
@@ -77,11 +84,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (cellDate < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
                 dayElement.classList.add('disabled-day');
             } else {
-                dayElement.addEventListener('click', (event) => {
-                    if (event.target.tagName !== 'BUTTON') {
-                        currentSelectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-                        showAvailabilityDetail();
-                    }
+                dayElement.addEventListener('click', () => {
+                    currentSelectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+                    showAvailabilityDetail();
                 });
             }
 
@@ -162,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             console.log('Delete response:', data); // Debug log
             if (data.includes('Record deleted successfully')) {
-                renderCalendar();
+                showAvailabilityDetail();
             } else {
                 console.error('Error deleting availability:', data);
             }
@@ -211,6 +216,10 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => console.error('Error loading availabilities:', error)); // Debug log
     }
 
+    addAvailabilityButton.addEventListener('click', () => {
+        showForm();
+    });
+
     availabilityForm.addEventListener('submit', (event) => {
         event.preventDefault();
         const startTime = document.getElementById('start-time').value;
@@ -229,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.text())
         .then(data => {
             console.log(data);
-            renderCalendar();
+            showAvailabilityDetail();
             closeForm();
             availabilityForm.reset();
         })
@@ -339,4 +348,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function closeForm() {
     document.getElementById('event-form').classList.add('hidden');
+}
+
+function closeDetail() {
+    document.getElementById('availability-detail').classList.add('hidden');
+    renderCalendar();
 }
