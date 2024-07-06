@@ -109,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             //Check if the availability.user_id is the same as the user_id of the session
                             //If so, add a delete button to the availability
+                            console.log(availability.user_id, data[0].user_id)
                             if (availability.user_id === data[0].user_id) {
                                 const deleteButton = document.createElement('button');
                                 deleteButton.textContent = 'Delete';
