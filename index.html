@@ -47,6 +47,13 @@
         <button id="logout-button">Logout</button>
     </div>
 
+    <div id="availability-detail" class="hidden">
+        <h2>Availability Details</h2>
+        <div id="availability-info"></div>
+        <button id="add-availability">Add Availability</button>
+        <button onclick="closeDetail()">Close</button>
+    </div>
+
     <div id="event-form" class="hidden">
         <h2>Add Availability</h2>
         <form id="availability-form">
@@ -67,13 +74,6 @@
             <button type="submit">Save</button>
             <button type="button" onclick="closeForm()">Cancel</button>
         </form>
-    </div>
-
-    <div id="availability-detail" class="hidden">
-        <h2>Availability Details</h2>
-        <div id="availability-info"></div>
-        <button id="add-availability">Add Availability</button>
-        <button onclick="closeDetail()">Close</button>
     </div>
 
     <script src="script.js"></script>

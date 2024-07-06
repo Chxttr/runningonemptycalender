@@ -178,7 +178,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function showForm() {
         form.classList.remove('hidden');
         availabilityDetail.classList.add('hidden');
-        selectedAvailabilityId = null;
     }
 
     function showAvailabilityDetail() {
@@ -202,13 +201,15 @@ document.addEventListener('DOMContentLoaded', () => {
                             infoElement.appendChild(activityInfo);
                         }
 
-                        const deleteButton = document.createElement('button');
-                        deleteButton.textContent = 'Delete';
-                        deleteButton.addEventListener('click', () => {
-                            deleteAvailability(availability.id);
-                        });
+                        if (availability.user_id === getUserId()) {
+                            const deleteButton = document.createElement('button');
+                            deleteButton.textContent = 'Delete';
+                            deleteButton.addEventListener('click', () => {
+                                deleteAvailability(availability.id);
+                            });
+                            infoElement.appendChild(deleteButton);
+                        }
 
-                        infoElement.appendChild(deleteButton);
                         availabilityInfo.appendChild(infoElement);
                     });
                 }
@@ -353,4 +354,12 @@ function closeForm() {
 function closeDetail() {
     document.getElementById('availability-detail').classList.add('hidden');
     renderCalendar();
+}
+
+function getUserId() {
+    // Assuming the user ID is stored in a session variable
+    return fetch('check_session.php')
+        .then(response => response.json())
+        .then(data => data.user_id)
+        .catch(error => console.error('Error getting user ID:', error));
 }
