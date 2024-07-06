@@ -80,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const availabilityMap = {};
                 
                 data.forEach(availability => {
+                    console.log(JSON.stringify(availability));
                     const day = new Date(availability.date).getDate();
                     if (day < currentDay) {
                         deleteAvailability(availability.id, true);
@@ -96,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     const dayElement = Array.from(dayElements).find(el => el.textContent == day);
                     if (dayElement) {
                         availabilityMap[day].forEach(availability => {
-                            console.log(availability);
                             const infoElement = document.createElement('div');
                             infoElement.textContent = `${availability.name}: ${availability.start_time}:00 - ${availability.end_time}:00 (${availability.status})`;
                             infoElement.classList.add('info');
