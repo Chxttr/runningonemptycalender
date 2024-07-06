@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const startTimeSelect = document.getElementById('start-time');
     const endTimeSelect = document.getElementById('end-time');
     const statusSelect = document.getElementById('status');
+    const activitySelect = document.getElementById('activity');
+    const activityContainer = document.getElementById('activity-container');
     const registerForm = document.getElementById('register-form');
     const loginForm = document.getElementById('login-form');
     const calendarContainer = document.getElementById('calendar-container');
@@ -15,9 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const showRegisterFormButton = document.getElementById('show-register-form');
     const showLoginFormButton = document.getElementById('show-login-form');
     const authContainer = document.getElementById('auth-container');
-
+    const availabilityDetail = document.getElementById('availability-detail');
+    const availabilityInfo = document.getElementById('availability-info');
+    const createAvailabilityButton = document.getElementById('create-availability');
+    
     let currentDate = new Date();
     let currentSelectedDate = null;
+    let selectedAvailabilityId = null;
 
     function populateTimeSelect(select) {
         for (let hour = 0; hour < 24; hour++) {
@@ -28,8 +34,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function populateActivitySelect() {
+        fetch('get_activities.php')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(activity => {
+                    const option = document.createElement('option');
+                    option.value = activity.id;
+                    option.textContent = activity.name;
+                    activitySelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error loading activities:', error)); // Debug log
+    }
+
     populateTimeSelect(startTimeSelect);
     populateTimeSelect(endTimeSelect);
+    populateActivitySelect();
 
     function renderCalendar() {
         calendar.innerHTML = '';
@@ -59,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 dayElement.addEventListener('click', (event) => {
                     if (event.target.tagName !== 'BUTTON') {
                         currentSelectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-                        showForm();
+                        showAvailabilityDetail();
                     }
                 });
             }
@@ -71,24 +92,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function loadAvailabilities() {
-        const month = currentDate.getMonth() + 1;
+        const month = currentDate.getMonth() + 1;  // JavaScript months are 0-11
         const year = currentDate.getFullYear();
-        const currentDay = new Date().getDate();
+
         fetch(`get_availabilities.php?month=${month}&year=${year}`)
             .then(response => response.json())
             .then(data => {
                 const availabilityMap = {};
-                
+
                 data.forEach(availability => {
                     const day = new Date(availability.date).getDate();
-                    if (day < currentDay) {
-                        deleteAvailability(availability.id, true);
-                    } else {
-                        if (!availabilityMap[day]) {
-                            availabilityMap[day] = [];
-                        }
-                        availabilityMap[day].push(availability);
+                    if (!availabilityMap[day]) {
+                        availabilityMap[day] = [];
                     }
+                    availabilityMap[day].push(availability);
                 });
 
                 for (const day in availabilityMap) {
@@ -100,6 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             infoElement.textContent = `${availability.name}: ${availability.start_time}:00 - ${availability.end_time}:00 (${availability.status})`;
                             infoElement.classList.add('info');
 
+                            // Apply status-specific class
                             if (availability.status === 'Vrij') {
                                 infoElement.classList.add('vrij');
                             } else if (availability.status === 'Niet vrij') {
@@ -108,11 +126,18 @@ document.addEventListener('DOMContentLoaded', () => {
                                 infoElement.classList.add('niet-zeker');
                             }
 
+                            // Add activity info if available
+                            if (availability.activity_name) {
+                                const activityInfo = document.createElement('div');
+                                activityInfo.textContent = `Activity: ${availability.activity_name}`;
+                                infoElement.appendChild(activityInfo);
+                            }
+
                             const deleteButton = document.createElement('button');
                             deleteButton.textContent = 'Delete';
                             deleteButton.addEventListener('click', (event) => {
                                 event.stopPropagation();
-                                console.log(`Deleting availability ID: ${availability.id}`);
+                                console.log(`Deleting availability ID: ${availability.id}`); // Debug log
                                 deleteAvailability(availability.id);
                             });
 
@@ -122,35 +147,68 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             })
-            .catch(error => console.error('Error loading availabilities:', error));
+            .catch(error => console.error('Error loading availabilities:', error)); // Debug log
     }
 
-    function deleteAvailability(id, isForced) {
+    function deleteAvailability(id) {
         fetch('delete_availability.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: `id=${id}& isForced=${isForced}`,
+            body: `id=${id}`,
         })
         .then(response => response.text())
         .then(data => {
-            console.log('Delete response:', data);
+            console.log('Delete response:', data); // Debug log
             if (data.includes('Record deleted successfully')) {
                 renderCalendar();
             } else {
                 console.error('Error deleting availability:', data);
             }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => console.error('Error:', error)); // Debug log
     }
 
     function showForm() {
         form.classList.remove('hidden');
+        availabilityDetail.classList.add('hidden');
+        selectedAvailabilityId = null;
     }
 
-    function closeForm() {
+    function showAvailabilityDetail() {
         form.classList.add('hidden');
+        availabilityDetail.classList.remove('hidden');
+        availabilityInfo.innerHTML = '';
+
+        fetch(`get_availabilities.php?date=${currentSelectedDate.toISOString().split('T')[0]}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length === 0) {
+                    availabilityInfo.textContent = 'No availabilities for this date.';
+                } else {
+                    data.forEach(availability => {
+                        const infoElement = document.createElement('div');
+                        infoElement.textContent = `${availability.name}: ${availability.start_time}:00 - ${availability.end_time}:00 (${availability.status})`;
+
+                        if (availability.activity_name) {
+                            const activityInfo = document.createElement('div');
+                            activityInfo.textContent = `Activity: ${availability.activity_name}`;
+                            infoElement.appendChild(activityInfo);
+                        }
+
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = 'Delete';
+                        deleteButton.addEventListener('click', () => {
+                            deleteAvailability(availability.id);
+                        });
+
+                        infoElement.appendChild(deleteButton);
+                        availabilityInfo.appendChild(infoElement);
+                    });
+                }
+            })
+            .catch(error => console.error('Error loading availabilities:', error)); // Debug log
     }
 
     availabilityForm.addEventListener('submit', (event) => {
@@ -158,6 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const startTime = document.getElementById('start-time').value;
         const endTime = document.getElementById('end-time').value;
         const status = document.getElementById('status').value;
+        const activity = status === 'Vrij' ? document.getElementById('activity').value : null;
         const date = `${currentSelectedDate.getFullYear()}-${currentSelectedDate.getMonth() + 1}-${currentSelectedDate.getDate()}`;
 
         fetch('save_availability.php', {
@@ -165,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: `date=${date}&start_time=${startTime}&end_time=${endTime}&status=${status}`,
+            body: `date=${date}&start_time=${startTime}&end_time=${endTime}&status=${status}&activity=${activity}`,
         })
         .then(response => response.text())
         .then(data => {
@@ -174,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
             closeForm();
             availabilityForm.reset();
         })
-        .catch(error => console.error('Error saving availability:', error));
+        .catch(error => console.error('Error saving availability:', error)); // Debug log
     });
 
     prevMonthButton.addEventListener('click', () => {
@@ -206,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 loginUser(username, password);
             }
         })
-        .catch(error => console.error('Error registering:', error));
+        .catch(error => console.error('Error registering:', error)); // Debug log
     });
 
     loginForm.addEventListener('submit', (event) => {
@@ -234,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderCalendar();
             }
         })
-        .catch(error => console.error('Error logging in:', error));
+        .catch(error => console.error('Error logging in:', error)); // Debug log
     }
 
     logoutButton.addEventListener('click', () => {
@@ -245,7 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loginForm.classList.remove('hidden');
             registerForm.classList.add('hidden');
         })
-        .catch(error => console.error('Error logging out:', error));
+        .catch(error => console.error('Error logging out:', error)); // Debug log
     });
 
     showRegisterFormButton.addEventListener('click', () => {
@@ -273,7 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 registerForm.classList.add('hidden');
             }
         })
-        .catch(error => console.error('Error checking session:', error));
+        .catch(error => console.error('Error checking session:', error)); // Debug log
 
     renderCalendar();
 });

@@ -3,68 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Availability Calendar</title>
+    <title>Calendar</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="./logo.png" type="image/x-icon">
 </head>
 <body>
     <div id="auth-container">
-        <form id="login-form">
-            <img id="login_logo" src="./logo.png" alt="runningonempty">
+        <div id="login-form" class="auth-form hidden">
             <h2>Login</h2>
-            <label for="login-username">Username:</label>
-            <input type="text" id="login-username" required>
-            <label for="login-password">Password:</label>
-            <input type="password" id="login-password" required>
-            <button type="submit">Login</button>
-            <button type="button" id="show-register-form">Register</button>
-        </form>
-        <form id="register-form" class="hidden">
-            <img id="login_logo" src="./logo.png" alt="runningonempty">
+            <form>
+                <label for="login-username">Username:</label>
+                <input type="text" id="login-username" name="username" required>
+                <label for="login-password">Password:</label>
+                <input type="password" id="login-password" name="password" required>
+                <button type="submit">Login</button>
+                <button type="button" id="show-register-form">Register</button>
+            </form>
+        </div>
+
+        <div id="register-form" class="auth-form hidden">
             <h2>Register</h2>
-            <label for="reg-username">Username:</label>
-            <input type="text" id="reg-username" required>
-            <label for="reg-password">Password:</label>
-            <input type="password" id="reg-password" required>
-            <button type="submit">Register</button>
-            <button type="button" id="show-login-form">Login</button>
-        </form>
+            <form>
+                <label for="reg-username">Username:</label>
+                <input type="text" id="reg-username" name="username" required>
+                <label for="reg-password">Password:</label>
+                <input type="password" id="reg-password" name="password" required>
+                <button type="submit">Register</button>
+                <button type="button" id="show-login-form">Login</button>
+            </form>
+        </div>
     </div>
+
     <div id="calendar-container" class="hidden">
-        <div id="calendar-header">
-            <button id="prev-month">Previous</button>
-            <h2 id="month-year"></h2>
-            <button id="next-month">Next</button>
-        </div>
-        <div id="day-names">
-            <div>Sun</div>
-            <div>Mon</div>
-            <div>Tue</div>
-            <div>Wed</div>
-            <div>Thu</div>
-            <div>Fri</div>
-            <div>Sat</div>
-        </div>
-        <div id="calendar"></div>
         <button id="logout-button">Logout</button>
+        <div id="month-year"></div>
+        <button id="prev-month">&lt;</button>
+        <button id="next-month">&gt;</button>
+        <div id="calendar"></div>
+
+        <div id="event-form" class="hidden">
+            <h2>Create Availability</h2>
+            <form id="availability-form">
+                <label for="start-time">Start Time:</label>
+                <select id="start-time"></select>
+                <label for="end-time">End Time:</label>
+                <select id="end-time"></select>
+                <label for="status">Status:</label>
+                <select id="status">
+                    <option value="Vrij">Vrij</option>
+                    <option value="Niet vrij">Niet vrij</option>
+                    <option value="Nog niet zeker">Nog niet zeker</option>
+                </select>
+                <div id="activity-container" class="hidden">
+                    <label for="activity">Activity:</label>
+                    <select id="activity"></select>
+                </div>
+                <button type="submit">Save Availability</button>
+            </form>
+        </div>
+
+        <div id="availability-detail" class="hidden">
+            <h2>Availability Details</h2>
+            <div id="availability-info"></div>
+            <button id="create-availability">Create Availability</button>
+        </div>
     </div>
-    <div id="event-form" class="hidden">
-        <h2>Add Availability</h2>
-        <form id="availability-form">
-            <label for="start-time">Start Time:</label>
-            <select id="start-time" required></select>
-            <label for="end-time">End Time:</label>
-            <select id="end-time" required></select>
-            <label for="status">Status:</label>
-            <select id="status" required>
-                <option value="Vrij">Vrij</option>
-                <option value="Niet vrij">Niet vrij</option>
-                <option value="Nog niet zeker">Nog niet zeker</option>
-            </select>
-            <button type="submit">Save</button>
-            <button type="button" onclick="closeForm()">Cancel</button>
-        </form>
-    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
