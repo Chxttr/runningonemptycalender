@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded')
     const calendar = document.getElementById('calendar');
     const form = document.getElementById('event-form');
     const availabilityForm = document.getElementById('availability-form');
