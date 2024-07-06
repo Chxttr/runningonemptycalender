@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.json())
             .then(data => {
                 const availabilityMap = {};
-                
+                console.log('hiii')
                 data.forEach(availability => {
                     console.log(JSON.stringify(availability));
                     const day = new Date(availability.date).getDate();
