@@ -17,8 +17,13 @@ if ($conn->connect_error) {
 
 $id = $_POST['id'];
 $user_id = $_SESSION['user_id'];
+$isForced = $_POST['isForced'];
 
-$sql = "DELETE FROM availabilities WHERE id='$id' AND user_id='$user_id'";
+if ($isForced) {
+    $sql = "DELETE FROM availabilities WHERE id='$id'";
+} else {
+    $sql = "DELETE FROM availabilities WHERE id='$id' AND user_id='$user_id'";
+}
 
 if ($conn->query($sql) === TRUE) {
     echo "Record deleted successfully";

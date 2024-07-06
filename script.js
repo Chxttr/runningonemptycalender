@@ -73,17 +73,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadAvailabilities() {
         const month = currentDate.getMonth() + 1;
         const year = currentDate.getFullYear();
-        const currentDate = new Date().getDate();
+        const currentDay = new Date().getDate();
         fetch(`get_availabilities.php?month=${month}&year=${year}`)
             .then(response => response.json())
             .then(data => {
                 const availabilityMap = {};
-
+                
                 data.forEach(availability => {
-                    console.log(JSON.stringify(availability));
                     const day = new Date(availability.date).getDate();
-                    if (day < currentDate) {
-                        deleteAvailability(availability.id);
+                    if (day < currentDay) {
+                        deleteAvailability(availability.id, true);
                     } else {
                         if (!availabilityMap[day]) {
                             availabilityMap[day] = [];
@@ -126,13 +125,13 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => console.error('Error loading availabilities:', error));
     }
 
-    function deleteAvailability(id) {
+    function deleteAvailability(id, isForced) {
         fetch('delete_availability.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: `id=${id}`,
+            body: `id=${id}& isForced=${isForced}`,
         })
         .then(response => response.text())
         .then(data => {
