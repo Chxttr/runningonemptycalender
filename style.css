@@ -147,11 +147,11 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    padding: 15px;
+    padding: 10px;
     text-align: center;
     cursor: pointer;
     position: relative;
-    min-height: 120px;
+    min-height: 100px;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -275,8 +275,8 @@ body {
     }
 
     .calendar-day {
-        min-height: 100px; /* Reduce minimum height for days */
-        padding: 10px; /* Reduce padding for mobile */
+        min-height: 80px; /* Reduce minimum height for days */
+        padding: 5px; /* Reduce padding for mobile */
     }
 
     .info {
@@ -295,8 +295,8 @@ body {
     }
 
     .calendar-day {
-        min-height: 80px; /* Further reduce minimum height for days */
-        padding: 8px; /* Further reduce padding for small screens */
+        min-height: 60px; /* Further reduce minimum height for days */
+        padding: 5px; /* Further reduce padding for small screens */
     }
 
     .info {
