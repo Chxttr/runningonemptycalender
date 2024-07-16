@@ -21,12 +21,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function populateTimeSelect(select) {
         for (let hour = 0; hour < 24; hour++) {
-            const option = document.createElement('option');
-            option.value = hour;
-            option.textContent = `${hour}:00`;
-            select.appendChild(option);
+            for (let minute = 0; minute < 60; minute += 30) {
+                const option = document.createElement('option');
+                option.value = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                option.textContent = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                select.appendChild(option);
+            }
         }
     }
+    
 
     populateTimeSelect(startTimeSelect);
     populateTimeSelect(endTimeSelect);
@@ -36,22 +39,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
         const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
         const daysInMonth = lastDayOfMonth.getDate();
-        const startDay = firstDayOfMonth.getDay();
+    
+        // Adjust startDay to consider Monday as the first day of the week
+        let startDay = firstDayOfMonth.getDay() - 1;
+        if (startDay === -1) {
+            startDay = 6;
+        }
         
         monthYearDisplay.textContent = `${currentDate.toLocaleString('default', { month: 'long' })} ${currentDate.getFullYear()}`;
-
+    
         for (let i = 0; i < startDay; i++) {
             const emptyCell = document.createElement('div');
             calendar.appendChild(emptyCell);
         }
-
+    
         for (let day = 1; day <= daysInMonth; day++) {
             const dayElement = document.createElement('div');
             dayElement.classList.add('calendar-day');
-
+    
             const cellDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
             const today = new Date();
-
+    
             dayElement.textContent = day;
             if (cellDate < new Date(today.getFullYear(), today.getMonth(), today.getDate())) {
                 dayElement.classList.add('disabled-day');
@@ -63,12 +71,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
             }
-
+    
             calendar.appendChild(dayElement);
         }
-
+    
         loadAvailabilities();
     }
+    
 
     function loadAvailabilities() {
         const month = currentDate.getMonth() + 1;
@@ -96,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (dayElement) {
                         availabilityMap[day].forEach(availability => {
                             const infoElement = document.createElement('div');
-                            infoElement.textContent = `${availability.name}: ${availability.start_time}:00 - ${availability.end_time}:00`;
+                            infoElement.textContent = `${availability.name}: ${availability.start_time} - ${availability.end_time}`;
                             infoElement.classList.add('info');
 
                             if (availability.status === 'Vrij') {
