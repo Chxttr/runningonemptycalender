@@ -1,5 +1,12 @@
 <?php
-require 'path/to/PHPMailerAutoload.php';
+// Include PHPMailer classes
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+// Load Composer's autoloader if you are using Composer
+require 'C:/xampp/htdocs/calender/PHPMailer/src/Exception.php';
+require 'C:/xampp/htdocs/calender/PHPMailer/src/PHPMailer.php';
+require 'C:/xampp/htdocs/calender/PHPMailer/src/SMTP.php';
 
 // Database connection setup
 $servername = "localhost";
@@ -84,15 +91,15 @@ $email_body = ob_get_clean();
 // Send the email
 $mail = new PHPMailer;
 $mail->isSMTP();
-$mail->Host = 'smtp-auth.mailprotect.be';
+$mail->Host = 'smtp.yourserver.com';
 $mail->SMTPAuth = true;
-$mail->Username = 'noreply@runningonempty.com';
-$mail->Password = '08a9M17k4BT9RMHHBrjb';
+$mail->Username = 'noreply@yourdomain.com';
+$mail->Password = 'yourpassword';
 $mail->SMTPSecure = 'tls';
 $mail->Port = 587;
 
-$mail->setFrom('noreply@runningonempty.com', 'Running On Empty');
-$mail->addAddress('dewerchinvince@gmail.com'); // Add your recipients here
+$mail->setFrom('noreply@yourdomain.com', 'Running On Empty');
+$mail->addAddress('recipient@example.com'); // Add your recipients here
 
 $mail->isHTML(true);
 $mail->Subject = 'Weekly Availability';
