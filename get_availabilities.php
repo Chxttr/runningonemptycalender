@@ -1,4 +1,7 @@
 <?php
+require 'path/to/PHPMailerAutoload.php';
+
+// Database connection setup
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -10,10 +13,11 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$month = $_GET['month'];
-$year = $_GET['year'];
+// Fetch the current week's data
+$startDate = date('Y-m-d', strtotime('monday this week'));
+$endDate = date('Y-m-d', strtotime('sunday this week'));
 
-$sql = "SELECT id, name, date, start_time, end_time, status, user_id FROM availabilities WHERE MONTH(date) = '$month' AND YEAR(date) = '$year'";
+$sql = "SELECT id, name, date, start_time, end_time, status, user_id FROM availabilities WHERE date BETWEEN '$startDate' AND '$endDate'";
 $result = $conn->query($sql);
 
 $availabilities = array();
@@ -24,7 +28,80 @@ if ($result->num_rows > 0) {
     }
 }
 
-echo json_encode($availabilities);
-
 $conn->close();
+
+// Format data into an HTML email
+ob_start();
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <p>Beste,</p>
+    <p>In onderstaande tabel kunt u de beschikbaarheden raadplegen voor deze week.</p>
+    <table>
+        <tr>
+            <th>Persoon</th>
+            <th>Datum</th>
+            <th>Starttijd</th>
+            <th>Eindtijd</th>
+            <th>Status</th>
+        </tr>
+        <?php foreach($availabilities as $row): ?>
+        <tr>
+            <td><?php echo $row['name']; ?></td>
+            <td><?php echo $row['date']; ?></td>
+            <td><?php echo $row['start_time']; ?></td>
+            <td><?php echo $row['end_time']; ?></td>
+            <td><?php echo $row['status']; ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </table>
+    <p>Bedankt om geregeld de beschikbaarheden in te vullen.</p>
+    <p>Running On Empty<br>
+    <a href="http://www.runningonempty.be">www.runningonempty.be</a></p>
+</body>
+</html>
+
+<?php
+$email_body = ob_get_clean();
+
+// Send the email
+$mail = new PHPMailer;
+$mail->isSMTP();
+$mail->Host = 'smtp-auth.mailprotect.be';
+$mail->SMTPAuth = true;
+$mail->Username = 'noreply@runningonempty.com';
+$mail->Password = '08a9M17k4BT9RMHHBrjb';
+$mail->SMTPSecure = 'tls';
+$mail->Port = 587;
+
+$mail->setFrom('noreply@runningonempty.com', 'Running On Empty');
+$mail->addAddress('dewerchinvince@gmail.com'); // Add your recipients here
+
+$mail->isHTML(true);
+$mail->Subject = 'Weekly Availability';
+$mail->Body    = $email_body;
+
+if(!$mail->send()) {
+    echo 'Message could not be sent.';
+    echo 'Mailer Error: ' . $mail->ErrorInfo;
+} else {
+    echo 'Message has been sent';
+}
 ?>
